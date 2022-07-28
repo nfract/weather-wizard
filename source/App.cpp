@@ -41,11 +41,6 @@ void App::Initialize()
 	std::cout << "> prcp-inventory\n";
 	Decoder::StreamStationNames("data-sets/prcp-inventory.txt", [&](const Station& station) {
 		//stationMap[station.code] = station;
-
-		if (counter > 30) return;
-
-		counter++;
-
 		stations.Insert(station.code, station);
 
 	});
@@ -78,7 +73,6 @@ void App::Update()
 		std::string stationCodeBufferStr = std::string(stationCodeBuffer);
 
 		intmax_t index = stations.Find(stationCodeBufferStr);
-		std::cout << index << std::endl;
 		if (index != -1)
 		{
 			stationSearchResults.emplace_back(stations.Search(index));

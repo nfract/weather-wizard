@@ -26,7 +26,7 @@ template <typename V>
 class HashMap
 {
 public:
-	HashMap(size_t buckets = 10, float multiplier = 1.15f)
+	HashMap(size_t buckets = 10, float multiplier = 2.0f)
 		: entries(0), buckets(buckets), loadFactor(0.0f), multiplier(multiplier)
 	{
 		table.resize(buckets);
@@ -67,8 +67,6 @@ public:
 
 		while (index < table.size() - 1)
 		{
-			std::cout << table[index].key << ", " << key << "\n";
-
 			if (table[index].key == key) return index;
 			if (statuses[index].test(BUCKET_STATUS_ACCESS_BIT) == BUCKET_STATUS_OPEN) return -1;
 
@@ -108,20 +106,6 @@ public:
 	size_t Reduce(size_t hash) const
 	{
 		return hash % buckets;
-	}
-
-	void PrintStats() const
-	{
-		std::cout << "Entries: " << entries << "\n";
-		std::cout << "Buckets: " << buckets << "\n";
-		std::cout << "Load Factor: " << loadFactor << "\n";
-		std::cout << "Space Ratio (Higher -> Less wasted space): " << (float) entries / buckets << "\n";
-		std::cout << "Underlying array size: " << table.size() << "\n";
-
-		for (const auto& bucket : table)
-		{
-			std::cout << bucket.key << "\n";
-		}
 	}
 
 private:
@@ -178,12 +162,12 @@ private:
 	{
 		size_t newIndex = index;
 
-		while (statuses[newIndex].test(BUCKET_STATUS_ACCESS_BIT) == BUCKET_STATUS_FILLED)
+		while (statuses[newIndex].test(BUCKET_STATUS_ACCESS_BIT) == BUCKET_STATUS_FILLED && newIndex < table.size() - 1)
 		{
-			newIndex = Reduce(++newIndex);
+			newIndex++;
 		}
 
-		return newIndex;
+		return Reduce(newIndex);
 	}
 
 private:
