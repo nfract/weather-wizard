@@ -85,6 +85,14 @@ public:
 		return index != -1 ? table[index].value : defaultv;
 	}
 
+	void Delete(const std::string& key)
+	{
+		intmax_t index = Find(key);
+
+		// Deleting is as simple as resetting the status bit for the bucket
+		if (index != -1) statuses[index].reset(BUCKET_STATUS_ACCESS_BIT);
+	}
+
 	V Search(intmax_t index) const
 	{
 		V defaultv;

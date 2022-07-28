@@ -49,8 +49,6 @@ void App::Initialize()
 	std::cout << "> mly-prcp-normal\n";
 	Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
 	});
-
-	stations.PrintStats();
 }
 
 void App::Update()
