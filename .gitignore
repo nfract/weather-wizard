@@ -37,3 +37,5 @@ x64/
 solution/
 libs/
 .*jfm
+.vs/
+weather-wizard.sln
