@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <string>
 
+#include "HashMap.h"
 #include "formats/Station.h"
 
 enum class AppGuiAction
@@ -47,10 +48,11 @@ private:
 
 	// Application Datas
 	std::unordered_map<std::string, Station> stationMap;
+	HashMap<Station> stations;
 
 	// Gui data
 	AppGuiAction currentAction;
 	char stationCodeBuffer[12];
 	size_t recentStationSearchIndex;
-	std::vector<Station*> stationSearchResults;
+	std::vector<Station> stationSearchResults;
 };

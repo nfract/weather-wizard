@@ -19,7 +19,7 @@ Authors: *Brandon, Samitha, and Duncan*
 * Select build and build for the desired configuration (Release / Debug)
 * ***Note:* May required glfw and glew library configuration in vc project properties.**
 ### Windows (64-bit, Cmake)
-### Linux (64-bit only)
+### Linux (64-bit)
 * **TODO**
-### MacOS (64-bit only)
+### MacOS (64-bit)
 * **TODO**

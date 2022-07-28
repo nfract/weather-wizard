@@ -35,25 +35,27 @@ void App::Initialize()
 	std::cout << "Required data sets\n";
 
 	// Stream in station data
+
+	int counter = 0;
+
 	std::cout << "> prcp-inventory\n";
 	Decoder::StreamStationNames("data-sets/prcp-inventory.txt", [&](const Station& station) {
-		stationMap[station.code] = station;
+		//stationMap[station.code] = station;
+
+		if (counter > 30) return;
+
+		counter++;
+
+		stations.Insert(station.code, station);
+
 	});
 
 	// Stream in precipitation data
 	std::cout << "> mly-prcp-normal\n";
 	Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
-		std::cout << normal.stationCode << " " << normal.normalAverageForYear << "\n";
 	});
 
-	HashMap<std::string> testMap(9500);
-
-	for (const auto& mapTest : stationMap)
-	{
-		testMap.Insert(mapTest.first, mapTest.second.state);
-	}
-	
-	std::cout << testMap.Find("USC00306441") << "\n";
+	stations.PrintStats();
 }
 
 void App::Update()
@@ -75,9 +77,11 @@ void App::Update()
 	{
 		std::string stationCodeBufferStr = std::string(stationCodeBuffer);
 
-		if (stationMap.find(stationCodeBufferStr) != stationMap.end())
+		intmax_t index = stations.Find(stationCodeBufferStr);
+		std::cout << index << std::endl;
+		if (index != -1)
 		{
-			stationSearchResults.emplace_back(&stationMap[stationCodeBufferStr]);
+			stationSearchResults.emplace_back(stations.Search(index));
 			recentStationSearchIndex = stationSearchResults.size() - 1;
 		}
 
@@ -111,7 +115,7 @@ void App::Update()
 		// Display station search history
 		for (long long i = stationSearchResults.size() - 1; i >= 0; i--)
 		{
-			const Station* station = stationSearchResults[i];
+			const Station station = stationSearchResults[i];
 
 			// Highlight most recent search in green
 			if (recentStationSearchIndex == i)
@@ -119,11 +123,11 @@ void App::Update()
 
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
-			ImGui::Text(station->code.c_str());
+			ImGui::Text(station.code.c_str());
 			ImGui::TableSetColumnIndex(1);
-			ImGui::Text(station->state.c_str());
+			ImGui::Text(station.state.c_str());
 			ImGui::TableSetColumnIndex(2);
-			ImGui::Text(station->description.c_str());
+			ImGui::Text(station.description.c_str());
 
 			if (recentStationSearchIndex == i)
 				ImGui::PopStyleColor();
@@ -143,7 +147,10 @@ void App::UpdateMenuBar()
 	{
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Show Station Code Finder"));
+			if (ImGui::MenuItem("Show Station Code Finder"))
+			{
+
+			}
 
 			ImGui::EndMenu();
 		}

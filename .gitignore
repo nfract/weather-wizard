@@ -34,3 +34,6 @@
 
 # Folders
 x64/
+solution/
+libs/
+.*jfm
