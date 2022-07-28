@@ -17,8 +17,8 @@ Authors: *Brandon, Samitha, and Duncan*
 * Requires visual c++ 14 min
 * Locate and open weather-wizard.vcxproj
 * Select build and build for the desired configuration (Release / Debug)
+* ***Note:* May required glfw and glew library configuration in vc project properties.**
 ### Windows (64-bit, Cmake)
-* ***Note:* May required glfw and glew library setup.**
 ### Linux (64-bit only)
 * **TODO**
 ### MacOS (64-bit only)
