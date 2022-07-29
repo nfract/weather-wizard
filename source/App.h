@@ -9,14 +9,9 @@
 
 #include <string>
 
-#include "datastructs/HashMap.h"
+#include "formats/PrecipitationNormal.h"
 #include "formats/Station.h"
-
-enum class AppGuiAction
-{
-	NONE,
-	MAIN_MENU_BAR_STATION_CODE_FINDER
-};
+#include "datastructs/HashMap.h"
 
 struct AppConfig
 {
@@ -35,8 +30,7 @@ public:
 	void Update();
 
 private:
-	void UpdateMenuBar();
-	void HandleActions();
+	void SearchStation(const std::string& stationCode);
 
 private:
 	// Application Window Data
@@ -49,8 +43,12 @@ private:
 	HashMap<Station> stations;
 
 	// Gui data
-	AppGuiAction currentAction;
 	char stationCodeBuffer[12];
 	size_t recentStationSearchIndex;
 	std::vector<Station> stationSearchResults;
+
+	std::string executionTime;
+	int selectedDataStructure;
+	int itemsToFind;
+	std::vector<PrecipitationNormal> precipitationSearchResults;
 };

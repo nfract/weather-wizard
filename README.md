@@ -11,6 +11,7 @@ Authors: *Brandon (nfract), Samitha, and Duncan*
 * https://www.ncei.noaa.gov/pub/data/normals/1981-2010/station-inventories/prcp-inventory.txt
 * https://www.ncei.noaa.gov/pub/data/normals/1981-2010/products/precipitation/mly-prcp-normal.txt
 * ***Note:* Data sets are included under **data-sets****
+* ***Note:* The data sets also include auto generated data based off the real world data sets*
 
 # **Platform Specific Building**
 ### Windows (64-bit, Visual Studio)

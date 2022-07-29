@@ -5,9 +5,10 @@
 #include <iostream>
 
 App::App(GLFWwindow* windowHandle, const AppConfig& config)
-	: windowHandle(windowHandle), config(config), currentAction(AppGuiAction::NONE), recentStationSearchIndex(0)
+	: windowHandle(windowHandle), config(config), recentStationSearchIndex(0), selectedDataStructure(0), itemsToFind(10), executionTime("0 microseconds")
 {
 	std::memset(stationCodeBuffer, 0, 12);
+
 }
 
 App::~App()
@@ -40,9 +41,16 @@ void App::Initialize()
 
 	});
 
+	int id = 0;
+
 	// Stream in precipitation data for red black tree
 	std::cout << "> mly-prcp-normal\n";
 	Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
+		if (id > 200) return;
+		
+		precipitationSearchResults.emplace_back(normal);
+
+		id++;
 	});
 }
 
@@ -53,26 +61,16 @@ void App::Update()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	UpdateMenuBar();
-	HandleActions();
-
+	// Station code finder window
 	ImGui::Begin("Station Code Finder");
 	ImGui::Text("*Most recent search result will be highlighted green.");
 	ImGui::Separator();
-	ImGui::Text("Station Code:");
-	ImGui::InputText("##Station Code: ", stationCodeBuffer, IM_ARRAYSIZE(stationCodeBuffer));
+	ImGui::Text("Station Code");
+	ImGui::InputText("##Station Code", stationCodeBuffer, IM_ARRAYSIZE(stationCodeBuffer));
 	if (ImGui::Button("Search..."))
 	{
 		std::string stationCodeBufferStr = std::string(stationCodeBuffer);
-
-		intmax_t index = stations.Find(stationCodeBufferStr);
-		if (index != -1)
-		{
-			stationSearchResults.emplace_back(stations.Search(index));
-			recentStationSearchIndex = stationSearchResults.size() - 1;
-		}
-
-		std::memset(stationCodeBuffer, 0, 12);
+		SearchStation(stationCodeBufferStr);
 	}
 
 	ImGui::Separator();
@@ -83,17 +81,17 @@ void App::Update()
 		| ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV
 		| ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable | ImGuiTableFlags_Hideable;
 
-	ImGui::Text("Search History:");
-	const int columnCount = 3;
-	const char* columnNames[] = { "Station Code", "State", "Description"};
-	if (ImGui::BeginTable("Test", 3, flags))
+	ImGui::Text("Search History");
+	const int columnCountSearchHistory = 3;
+	const char* columnNamesSearchHistory[] = { "Station Code", "State", "Description"};
+	if (ImGui::BeginTable("Search History", 3, flags))
 	{
-		for (size_t i = 0; i < columnCount; i++)
+		for (size_t i = 0; i < columnCountSearchHistory; i++)
 		{
 			ImGui::TableNextColumn();
 			ImGui::PushID(i);
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("%s", columnNames[i]);
+			ImGui::Text("%s", columnNamesSearchHistory[i]);
 			ImGui::Spacing();
 
 			ImGui::PopID();
@@ -124,28 +122,92 @@ void App::Update()
 	}
 	ImGui::End();
 
+	//---------------------------------------------------------------------------------------
+
+	//Kth largest window
+	ImGui::Begin("Kth Largest");
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 123, 232, 255));
+	ImGui::Text("*Execution time");
+	ImGui::Text(executionTime.c_str());
+	ImGui::PopStyleColor();
+	ImGui::Separator();
+
+	const char* dataStructures[] = { "Red Black Tree", "Heap" };
+	ImGui::Text("Algorithm");
+	ImGui::Combo("##Algorithm", &selectedDataStructure, dataStructures, IM_ARRAYSIZE(dataStructures));
+
+	ImGui::Separator();
+	
+	ImGui::Text("Min/Max items to find");
+	ImGui::SliderInt("##Min/Max items to find", &itemsToFind, 0, 200);
+
+	if (ImGui::Button("Search..."))
+	{
+
+	}
+
+	const int columnCountSearchResults = 15;
+	const char* columnNamesSearchResults[] = { "Station Code", "State", "Normal Average Year (in)", 
+		                                       "January", "February", "March", 
+		                                       "April", "May", "June", "July", 
+		                                       "August", "September", "October",
+		                                       "November", "December"};
+	ImGui::Text("Search Results");
+	if (ImGui::BeginTable("Search Results", 15, flags))
+	{
+		for (size_t i = 0; i < columnCountSearchResults; i++)
+		{
+			ImGui::TableNextColumn();
+			ImGui::PushID(i);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("%s", columnNamesSearchResults[i]);
+			ImGui::Spacing();
+
+			ImGui::PopID();
+		}
+
+		// Display search results
+		for (size_t i = 0; i < precipitationSearchResults.size(); i++)
+		{
+			const PrecipitationNormal precipitationNormal = precipitationSearchResults[i];
+
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			if (ImGui::Button(precipitationNormal.stationCode.c_str()))
+			{
+				SearchStation(precipitationNormal.stationCode.c_str());
+			}
+			ImGui::TableSetColumnIndex(1);
+			ImGui::Text(stations.Search(precipitationNormal.stationCode).state.c_str());
+
+			ImGui::TableSetColumnIndex(2);
+			ImGui::Text("%.2f", precipitationNormal.normalAverageForYear);
+			
+			// Display each months precipitation normal
+			for (size_t j = 0; j < 12; j++)
+			{
+				ImGui::TableSetColumnIndex(3 + j);
+				ImGui::Text("%.2f", precipitationNormal.normalAverageByMonth[j]);
+			}
+		}
+
+		ImGui::EndTable();
+	}
+
+	ImGui::End();
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void App::UpdateMenuBar()
+void App::SearchStation(const std::string& stationCode)
 {
-	if (ImGui::BeginMainMenuBar())
+	intmax_t index = stations.Find(stationCode);
+	if (index != -1)
 	{
-		if (ImGui::BeginMenu("View"))
-		{
-			if (ImGui::MenuItem("Show Station Code Finder"))
-			{
-
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMainMenuBar();
+		stationSearchResults.emplace_back(stations.Search(index));
+		recentStationSearchIndex = stationSearchResults.size() - 1;
 	}
-}
 
-void App::HandleActions()
-{
+	std::memset(stationCodeBuffer, 0, 12);
 }

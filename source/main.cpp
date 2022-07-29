@@ -11,7 +11,7 @@ void PauseApp()
 int main()
 {
 	// Read app config
-	AppConfig config = { 1080, 720, "#version 330" };
+	AppConfig config = { 1920, 1080, "#version 330" };
 
 	// Initialize glfw
 	if (!glfwInit())
