@@ -7,10 +7,9 @@
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
 
-#include <unordered_map>
 #include <string>
 
-#include "HashMap.h"
+#include "datastructs/HashMap.h"
 #include "formats/Station.h"
 
 enum class AppGuiAction
@@ -47,7 +46,6 @@ private:
 	AppConfig config;
 
 	// Application Datas
-	std::unordered_map<std::string, Station> stationMap;
 	HashMap<Station> stations;
 
 	// Gui data

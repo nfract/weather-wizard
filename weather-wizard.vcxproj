@@ -151,7 +151,7 @@
     <ClInclude Include="source\Decoder.h" />
     <ClInclude Include="source\formats\PrecipitationNormal.h" />
     <ClInclude Include="source\formats\Station.h" />
-    <ClInclude Include="source\HashMap.h" />
+    <ClInclude Include="source\datastructs\HashMap.h" />
     <ClInclude Include="source\imgui\imconfig.h" />
     <ClInclude Include="source\imgui\imgui.h" />
     <ClInclude Include="source\imgui\imgui_impl_glfw.h" />
@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data-sets\mly-prcp-normal.txt" />
+    <Text Include="data-sets\prcp-inventory-uf.txt" />
     <Text Include="data-sets\prcp-inventory.txt" />
   </ItemGroup>
   <ItemGroup>

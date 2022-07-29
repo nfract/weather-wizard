@@ -1,11 +1,6 @@
 #include <iostream>
 
 #include "App.h"
-#include "HashMap.h"
-
-#include "Decoder.h"
-
-#include <bitset>
 
 void PauseApp()
 {
@@ -15,7 +10,6 @@ void PauseApp()
 
 int main()
 {
-
 	// Read app config
 	AppConfig config = { 1080, 720, "#version 330" };
 

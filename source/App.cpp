@@ -1,6 +1,5 @@
 #include "App.h"
 
-#include "HashMap.h"
 #include "Decoder.h"
 
 #include <iostream>
@@ -35,17 +34,13 @@ void App::Initialize()
 	std::cout << "Required data sets\n";
 
 	// Stream in station data
-
-	int counter = 0;
-
 	std::cout << "> prcp-inventory\n";
 	Decoder::StreamStationNames("data-sets/prcp-inventory.txt", [&](const Station& station) {
-		//stationMap[station.code] = station;
 		stations.Insert(station.code, station);
 
 	});
 
-	// Stream in precipitation data
+	// Stream in precipitation data for red black tree
 	std::cout << "> mly-prcp-normal\n";
 	Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
 	});

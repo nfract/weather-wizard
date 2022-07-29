@@ -89,7 +89,7 @@ public:
 	{
 		intmax_t index = Find(key);
 
-		// Deleting is as simple as resetting the status bit for the bucket
+		// Deleting is as simple as resetting the status bit to open for the bucket
 		if (index != -1) statuses[index].reset(BUCKET_STATUS_ACCESS_BIT);
 	}
 
@@ -171,9 +171,7 @@ private:
 		size_t newIndex = index;
 
 		while (statuses[newIndex].test(BUCKET_STATUS_ACCESS_BIT) == BUCKET_STATUS_FILLED && newIndex < table.size() - 1)
-		{
 			newIndex++;
-		}
 
 		return Reduce(newIndex);
 	}
