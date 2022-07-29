@@ -49,6 +49,7 @@ private:
 
 	std::string executionTime;
 	int selectedDataStructure;
+	int selectedMinOrMax;
 	int itemsToFind;
 	std::vector<PrecipitationNormal> precipitationSearchResults;
 };

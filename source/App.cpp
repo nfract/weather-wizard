@@ -5,7 +5,7 @@
 #include <iostream>
 
 App::App(GLFWwindow* windowHandle, const AppConfig& config)
-	: windowHandle(windowHandle), config(config), recentStationSearchIndex(0), selectedDataStructure(0), itemsToFind(10), executionTime("0 microseconds")
+	: windowHandle(windowHandle), config(config), recentStationSearchIndex(0), selectedDataStructure(0), selectedMinOrMax(0), itemsToFind(10), executionTime("0 microseconds")
 {
 	std::memset(stationCodeBuffer, 0, 12);
 
@@ -125,9 +125,11 @@ void App::Update()
 	//---------------------------------------------------------------------------------------
 
 	//Kth largest window
-	ImGui::Begin("Kth Largest");
+	ImGui::Begin("Weather Wizard");
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 123, 232, 255));
-	ImGui::Text("*Execution time");
+	ImGui::Text("*Size: ");
+	ImGui::Text(std::to_string(stations.Size()).c_str());
+	ImGui::Text("*Search time");
 	ImGui::Text(executionTime.c_str());
 	ImGui::PopStyleColor();
 	ImGui::Separator();
@@ -135,6 +137,10 @@ void App::Update()
 	const char* dataStructures[] = { "Red Black Tree", "Heap" };
 	ImGui::Text("Algorithm");
 	ImGui::Combo("##Algorithm", &selectedDataStructure, dataStructures, IM_ARRAYSIZE(dataStructures));
+
+	const char* minOrMax[] = { "Minimum", "Maximum" };
+	ImGui::Text("Result Type");
+	ImGui::Combo("##Result Type", &selectedMinOrMax, minOrMax, IM_ARRAYSIZE(minOrMax));
 
 	ImGui::Separator();
 	

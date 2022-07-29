@@ -116,6 +116,11 @@ public:
 		return hash % buckets;
 	}
 
+	size_t Size() const
+	{
+		return entries;
+	}
+
 private:
 	void SudoInsert(const Bucket<V>& bucket)
 	{

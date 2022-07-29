@@ -23,7 +23,7 @@ int main()
 	}
 
 	// Create the native window handle and create the OpenGL context
-	GLFWwindow* windowHandle = glfwCreateWindow(config.width, config.height, "Group Project", nullptr, nullptr);
+	GLFWwindow* windowHandle = glfwCreateWindow(config.width, config.height, "Weather Wizard", nullptr, nullptr);
 	glfwMakeContextCurrent(windowHandle);
 
 	// Initialize glew (OpenGL function call wrangler library)
