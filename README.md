@@ -1,6 +1,6 @@
 # **Weather Wizard**
 COP3530 Su22 Group Project
-Authors: *Brandon, Samitha, and Duncan*
+Authors: *Brandon (nfract), Samitha, and Duncan*
 
 # **Required Dependencies**
 * ImGui https://github.com/ocornut/imgui
