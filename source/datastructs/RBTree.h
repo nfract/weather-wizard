@@ -1,6 +1,5 @@
 #ifndef SRKWW_RBTREE_H
 #define SRKWW_RBTREE_H
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -176,14 +175,37 @@ private:
         return leftNode;
     }
 
-    // Insert all nodes into passed in vector
-    void GetAllNodes(Node* root, vector<Node*>& allNodes)
+    // Put k largest structs into passed in vector
+    void helpReturnMax(Node* root, vector<PrecipitationNormal>& highest, int k, int& count)
     {
-        if (root != nullptr)
+        if (count != k && root != nullptr)
         {
-            GetAllNodes(root->left, allNodes);
-            allNodes.push_back(root);
-            GetAllNodes(root->right, allNodes);
+            helpReturnMax(root->right, highest, k, count);
+
+            if (count!=k)
+            {
+                count++;
+                highest.push_back(root->thisYear);
+            }
+
+            helpReturnMax(root->left, highest, k, count);
+        }
+    }
+
+    // Put k smallest structs into passed in vector
+    void helpReturnMin(Node* root, vector<PrecipitationNormal>& lowest, int k, int& count)
+    {
+        if (count != k && root != nullptr)
+        {
+            helpReturnMin(root->left, lowest, k, count);
+
+            if (count!=k)
+            {
+                count++;
+                lowest.push_back(root->thisYear);
+            }
+
+            helpReturnMin(root->right, lowest, k, count);
         }
     }
 
@@ -209,29 +231,25 @@ public:
     }
 
     // Returns vector of k nodes with highest normalAverage
-    vector<Node*> ReturnMax(int k)
+    vector<PrecipitationNormal> ReturnMax(int k)
     {
-        vector<Node*> allNodes;
-        GetAllNodes(treeRoot, allNodes);
-        vector<Node*> returnVector;
+        vector<PrecipitationNormal> returnVal;
+        int count=0;
 
-        for (int i=0; i<k; i++)
-            returnVector.push_back(allNodes.at(allNodes.size()-1-i));
+        helpReturnMax(treeRoot,returnVal,k,count);
 
-        return returnVector;
+        return returnVal;
     }
 
     // Returns vector of k nodes with lowest normalAverage
-    vector<Node*> ReturnMin(int k)
+    vector<PrecipitationNormal> ReturnMin(int k)
     {
-        vector<Node*> allNodes;
-        GetAllNodes(treeRoot, allNodes);
-        vector<Node*> returnVector;
+        vector<PrecipitationNormal> returnVal;
+        int count=0;
 
-        for (int i=0; i<k; i++)
-            returnVector.push_back(allNodes.at(i));
+        helpReturnMin(treeRoot,returnVal,k,count);
 
-        return returnVector;
+        return returnVal;
     }
 };
 
