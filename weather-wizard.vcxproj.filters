@@ -60,6 +60,12 @@
     <ClInclude Include="source\imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\datastructs\Heaps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\datastructs\RBTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\App.cpp">

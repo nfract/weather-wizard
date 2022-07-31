@@ -2,7 +2,6 @@
 
 #include <cinttypes>
 #include <iostream>
-#include <optional>
 #include <bitset>
 #include <vector>
 #include <list>

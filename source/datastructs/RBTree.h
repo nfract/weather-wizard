@@ -1,21 +1,12 @@
-#ifndef SRKWW_RBTREE_H
-#define SRKWW_RBTREE_H
+#pragma once
+
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <array>
 
+#include "../formats/PrecipitationNormal.h"
 
-enum Color{RED, BLACK};
-
-
-// Store station code and data
-struct PrecipitationNormal
-{
-    string stationCode;
-    float normalAverageForYear = 0;
-    float* normalAverageByMonth = {};
-};
-
+enum Color { RED, BLACK };
 
 // Store data for each location/station
 struct Node
@@ -27,7 +18,7 @@ public:
     Node* right;
     PrecipitationNormal thisYear;
 
-    Node(string place, float level, float* arr) {
+    Node(std::string place, float level, std::array<float, 12> arr) {
         color = RED;
         parent = nullptr;
         left = nullptr;
@@ -38,7 +29,6 @@ public:
     }
 };
 
-
 class RBTree
 {
 private:
@@ -47,7 +37,7 @@ private:
     bool leftNeeded, rightNeeded, leftRightNeeded, rightLeftNeeded;
 
     // Balance nodes
-    Node* Balance(Node* root, string place, float level, float* arr)
+    Node* Balance(Node* root, std::string place, float level, std::array<float, 12> arr)
     {
         bool redRedConflict=false;
 
@@ -176,7 +166,7 @@ private:
     }
 
     // Put k largest structs into passed in vector
-    void helpReturnMax(Node* root, vector<PrecipitationNormal>& highest, int k, int& count)
+    void helpReturnMax(Node* root, std::vector<PrecipitationNormal>& highest, int k, int& count)
     {
         if (count != k && root != nullptr)
         {
@@ -193,7 +183,7 @@ private:
     }
 
     // Put k smallest structs into passed in vector
-    void helpReturnMin(Node* root, vector<PrecipitationNormal>& lowest, int k, int& count)
+    void helpReturnMin(Node* root, std::vector<PrecipitationNormal>& lowest, int k, int& count)
     {
         if (count != k && root != nullptr)
         {
@@ -209,7 +199,6 @@ private:
         }
     }
 
-
 public:
     RBTree()
     {
@@ -218,7 +207,7 @@ public:
     }
 
     // Insert nodes into RBTree
-    void Insert(string place, float level, float* arr)
+    void Insert(std::string place, float level, std::array<float, 12> arr)
     {
         if (treeRoot == nullptr)
         {
@@ -231,9 +220,9 @@ public:
     }
 
     // Returns vector of k nodes with highest normalAverage
-    vector<PrecipitationNormal> ReturnMax(int k)
+    std::vector<PrecipitationNormal> ReturnMax(int k)
     {
-        vector<PrecipitationNormal> returnVal;
+        std::vector<PrecipitationNormal> returnVal;
         int count=0;
 
         helpReturnMax(treeRoot,returnVal,k,count);
@@ -242,9 +231,9 @@ public:
     }
 
     // Returns vector of k nodes with lowest normalAverage
-    vector<PrecipitationNormal> ReturnMin(int k)
+    std::vector<PrecipitationNormal> ReturnMin(int k)
     {
-        vector<PrecipitationNormal> returnVal;
+        std::vector<PrecipitationNormal> returnVal;
         int count=0;
 
         helpReturnMin(treeRoot,returnVal,k,count);
@@ -252,5 +241,3 @@ public:
         return returnVal;
     }
 };
-
-#endif //SRKWW_RBTREE_H

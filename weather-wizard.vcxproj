@@ -148,6 +148,8 @@
   <ItemGroup>
     <ClInclude Include="source\App.h" />
     <ClInclude Include="source\ConfigLoader.h" />
+    <ClInclude Include="source\datastructs\Heaps.h" />
+    <ClInclude Include="source\datastructs\RBTree.h" />
     <ClInclude Include="source\Decoder.h" />
     <ClInclude Include="source\formats\PrecipitationNormal.h" />
     <ClInclude Include="source\formats\Station.h" />

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <string>
 
 struct PrecipitationNormal
@@ -7,5 +8,5 @@ struct PrecipitationNormal
 	std::string stationCode;
 
 	float normalAverageForYear;
-	float normalAverageByMonth[12] = {};
+	std::array<float, 12> normalAverageByMonth;
 };

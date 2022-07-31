@@ -11,7 +11,9 @@
 
 #include "formats/PrecipitationNormal.h"
 #include "formats/Station.h"
+
 #include "datastructs/HashMap.h"
+#include "datastructs/RBTree.h"
 
 struct AppConfig
 {
@@ -48,8 +50,11 @@ private:
 	std::vector<Station> stationSearchResults;
 
 	std::string executionTime;
+	std::string streamTime;
 	int selectedDataStructure;
 	int selectedMinOrMax;
 	int itemsToFind;
 	std::vector<PrecipitationNormal> precipitationSearchResults;
+
+	RBTree redblackRepresentation;
 };
