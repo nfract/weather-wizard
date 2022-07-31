@@ -18,7 +18,8 @@ public:
     Node* right;
     PrecipitationNormal thisYear;
 
-    Node(std::string place, float level, std::array<float, 12> arr) {
+    Node(std::string place, float level, std::array<float, 12> arr) 
+    {
         color = RED;
         parent = nullptr;
         left = nullptr;

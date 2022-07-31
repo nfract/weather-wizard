@@ -1,115 +1,138 @@
-#include <iostream>
+#pragma once
+
+#include "../formats/PrecipitationNormal.h"
+
 #include <map>
 #include <string>
 #include <array>
 #include <vector>
 #include <queue>
-
-#include "../formats/PrecipitationNormal.h"
+#include <iostream>
 
 class MaxHeap 
 {
-    public:
-
-    void MaxHeapify(struct PrecipitationNormal arr[], int size, int i) 
+    std::vector<PrecipitationNormal> big;
+    int size = 0;
+public:
+    void MaxHeapify(int i) 
     {
         int max = i;
         int right = 2 * i + 2;
         int left = 2 * i + 1;
-        if ((arr[right].normalAverageForYear / 100) > (arr[max].normalAverageForYear / 100) && right < size) 
+        if ((big[right].normalAverageForYear) > (big[max].normalAverageForYear) && right < size)
         {
             max = right;
         }
 
-        if ((arr[left].normalAverageForYear / 100) > (arr[max].normalAverageForYear / 100) && left < size ) 
+        if ((big[left].normalAverageForYear) > (big[max].normalAverageForYear) && left < size) 
         {
             max = left;
         }
 
         if (i != max) 
         {
-            PrecipitationNormal lasting = arr[i];
-            arr[i] = arr[max];
-            arr[max] = lasting;
-            MaxHeapify(arr, size, max);
+            PrecipitationNormal lasting = big[i];
+            big[i] = big[max];
+            big[max] = lasting;
+            MaxHeapify(max);
         }
     }
 
-    PrecipitationNormal extractMax(struct PrecipitationNormal arr[], int size) 
+    PrecipitationNormal extractMax() 
     {
-        PrecipitationNormal lasting = arr[0];
-        arr[0] = arr[--size];
-        MaxHeapify(arr, size, 0);
-        return lasting; 
+        PrecipitationNormal lasting = big[0];
+        big[0] = big[--size];
+        MaxHeapify(0);
+        return lasting;
     }
 
-    void BuildHeapMax(struct PrecipitationNormal arr[], int size) 
+    PrecipitationNormal Max()
     {
-        for (int i  = size / 2 - 1; i >= 0; i--) 
+        return big[0];
+    }
+
+    void insertMax(PrecipitationNormal blue) 
+    {
+        big.push_back(blue);
+        size++;
+
+        for (int i = size / 2 - 1; i >= 0; i--) 
         {
-            MaxHeapify(arr, size, i);
+            MaxHeapify(i);
         }
     }
 
-    std::vector<PrecipitationNormal> kthlargestMax(struct PrecipitationNormal arr[], int k, int size) 
+    int Size()
     {
-        std::vector<PrecipitationNormal> vec;
-        for(int i = 0; i < k; i++) 
-        {
-            vec.push_back(extractMax(arr, size));
-        }
-        return vec;
+        return size;
+    }
+
+    bool Empty()
+    {
+        return size == 0;
     }
 };
 
-class MinHeap {
-    public:
-    void MinHeapify(struct PrecipitationNormal arr[], int size, int i)
+class MinHeap 
+{
+    std::vector<PrecipitationNormal> little;
+    int size = 0;
+public:
+    void MinHeapify(int i) 
     {
         int min = i;
         int right = 2 * i + 2;
         int left = 2 * i + 1;
-        if ((arr[right].normalAverageForYear / 100) < (arr[min].normalAverageForYear / 100) && right < size) 
+
+        if ((little[right].normalAverageForYear) < (little[min].normalAverageForYear) && right < size) 
         {
             min = right;
         }
-        if (arr[left].normalAverageForYear < arr[min].normalAverageForYear && left < size) 
+
+        if (little[left].normalAverageForYear < little[min].normalAverageForYear && left < size) 
         {
             min = left;
         }
+
         if (i != min) 
         {
-            PrecipitationNormal lasting = arr[i];
-            arr[i] = arr[min];
-            arr[min] = lasting;
-
-            MinHeapify(arr, size, 0);
+            PrecipitationNormal lasting = little[i];
+            little[i] = little[min];
+            little[min] = lasting;
+            MinHeapify(0);
         }
     }
 
-    PrecipitationNormal extractMin(struct PrecipitationNormal arr[], int size)
+    PrecipitationNormal extractMin() 
     {
-        PrecipitationNormal lasting = arr[0];
-        arr[0] = arr[--size];
-        MinHeapify(arr, size, 0);
+        PrecipitationNormal lasting = little[0];
+        little[0] = little[--size];
+        MinHeapify(0);
         return lasting;
     }
 
-    void BuildHeapMin(struct PrecipitationNormal arr[], int size) 
+    PrecipitationNormal Min()
     {
-        for (int i  = size / 2 - 1; i >= 0; i--) 
+        return little[0];
+    }
+
+    void insertMin(PrecipitationNormal blue) 
+    {
+        little.push_back(blue);
+        size++;
+        for (int i = size / 2 - 1; i >= 0; i--) 
         {
-            MinHeapify(arr, size, i);
+            MinHeapify(i);
         }
     }
 
-    std::vector<PrecipitationNormal> kthlargestMin(struct PrecipitationNormal arr[], int k, int size)
+    int Size() 
     {
-        std::vector<PrecipitationNormal> vec;
-        for(int i = 0; i < k; i++) 
-        {
-            vec.push_back(extractMin(arr, size));
-        }
-        return vec;
+        return size;
+    }
+    
+    bool Empty()
+    {
+        return size == 0;
     }
 };

@@ -10,7 +10,6 @@ App::App(GLFWwindow* windowHandle, const AppConfig& config)
 	: windowHandle(windowHandle), config(config), recentStationSearchIndex(0), selectedDataStructure(0), selectedMinOrMax(0), itemsToFind(10), executionTime("0 microseconds"), streamTime("0 microseconds")
 {
 	std::memset(stationCodeBuffer, 0, 12);
-
 }
 
 App::~App()
@@ -124,8 +123,6 @@ void App::Update()
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 123, 232, 255));
 	ImGui::Text("*Data Set Size: ");
 	ImGui::Text(std::to_string(stations.Size()).c_str());
-	ImGui::Text("*Stream Time (Measures data stream time for kth largest using heap)");
-	ImGui::Text(streamTime.c_str());
 	ImGui::Text("*Search Time (Measures min/max search time for kth largest for both tree and heap)");
 	ImGui::Text(executionTime.c_str());
 	ImGui::PopStyleColor();
@@ -157,27 +154,53 @@ void App::Update()
 		{
 			minMaxResults = redblackRepresentation.ReturnMin(itemsToFind);
 		}
-		else
+		else if (selectedDataStructure == 0 && selectedMinOrMax == 1)
 		{
 			minMaxResults = redblackRepresentation.ReturnMax(itemsToFind);
 		}
 
-		executionEnd = std::chrono::steady_clock::now();
-
 		// Heap
 		if (selectedDataStructure == 1 && selectedMinOrMax == 0)
 		{
+			MaxHeap minHeap;
+
 			Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
-				redblackRepresentation.Insert(normal.stationCode, normal.normalAverageForYear, normal.normalAverageByMonth);
+				if (minHeap.Size() > itemsToFind && normal.normalAverageForYear < minHeap.Max().normalAverageForYear)
+					return;
+
+				minHeap.insertMax(normal);
+
+				if (minHeap.Size() > itemsToFind)
+					minHeap.extractMax();
+				});
+
+			while (!minHeap.Empty())
+			{
+				minMaxResults.emplace_back(minHeap.extractMax());
+			}
+		}
+		else if (selectedDataStructure == 1 && selectedMinOrMax == 1)
+		{
+			
+			MinHeap minHeap;
+
+			Decoder::StreamPrecipitationNormal("data-sets/mly-prcp-normal.txt", [&](const PrecipitationNormal& normal) {
+				if (minHeap.Size() > itemsToFind && normal.normalAverageForYear < minHeap.Min().normalAverageForYear)
+					return;
+
+				minHeap.insertMin(normal);
+
+				if (minHeap.Size() > itemsToFind)
+					minHeap.extractMin();
 			});
 
-			MinHeap minHeap;
-			minHeap.BuildHeapMin()
+			while (!minHeap.Empty())
+			{
+				minMaxResults.emplace_back(minHeap.extractMin());
+			}
 		}
-		else
-		{
 
-		}
+		executionEnd = std::chrono::steady_clock::now();
 
 		executionTime = std::to_string(std::chrono::duration_cast<std::chrono::microseconds>(executionEnd - executionStart).count()) + " microseconds";
 
