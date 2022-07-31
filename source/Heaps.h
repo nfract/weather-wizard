@@ -45,18 +45,6 @@ class MaxHeap {
             MaxHeapify(i);
         }
     }
-    PrecipitationNormal kthSmallest(int k) {
-        for(PrecipitationNormal yellow : big) {
-            if(size == k && yellow.normalAverageForYear > big[0].normalAverageForYear) {
-                continue;
-            }
-            insertMax(yellow);
-            if(size > k) {
-                extractMax();
-            }
-        }
-        print big;
-    }
 };
 
 class MinHeap {
@@ -92,17 +80,5 @@ class MinHeap {
         for(int i = size / 2 - 1; i >= 0; i--) {
            MinHeapify(i);
         }
-    }
-    PrecipitationNormal kthlargest(int k) {
-        for(PrecipitationNormal red : little) {
-            if(size == k && red.normalAverageForYear < little[0].normalAverageForYear) {
-                continue;
-            }
-            insertMin(red);
-            if (size > k) {
-                extractMin();
-            }
-        }
-        print little;
     }
 };
