@@ -72,7 +72,7 @@ public:
 			index = Reduce(++index);
 		}
 
-		// We did not find the key at all
+		// We did not find the key at all :(
 		return -1;
 	}
 
